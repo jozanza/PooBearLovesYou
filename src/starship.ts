@@ -184,12 +184,16 @@ export function playSound(src: string) {
     const audio = new Audio(src)
     SOUNDS.set(src, audio)
   }
-  SOUNDS.get(src).play()
+  try {
+    SOUNDS.get(src).play()
+  } catch (err) {}
 }
 
 export function stopSound(src: string) {
   if (!SOUNDS.has(src)) return
-  SOUNDS.get(src).pause()
+  try {
+    SOUNDS.get(src).pause()
+  } catch (err) {}
 }
 
 export function isSoundPlaying(src: string) {
