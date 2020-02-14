@@ -179,21 +179,23 @@ export function isButtonPressed(btn: Button) {
 
 const SOUNDS = new Map<string, HTMLAudioElement>()
 
+const noop = () => {}
+
 export function playSound(src: string) {
   if (!SOUNDS.has(src)) {
     const audio = new Audio(src)
     SOUNDS.set(src, audio)
   }
-  try {
-    SOUNDS.get(src).play()
-  } catch (err) {}
+  SOUNDS.get(src)
+    .play()
+    // "handle" playback errors and prevent dev overlay from blowing up
+    .then(noop)
+    .catch(noop)
 }
 
 export function stopSound(src: string) {
   if (!SOUNDS.has(src)) return
-  try {
-    SOUNDS.get(src).pause()
-  } catch (err) {}
+  SOUNDS.get(src).pause()
 }
 
 export function isSoundPlaying(src: string) {
