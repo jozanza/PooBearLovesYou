@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.html",
   "scripts": {
-    "start": "parcel index.html --open",
+    "start": "parcel index.html",
+    "prestart": "rm -rf dist && mkdir dist && cp -r public/. dist",
     "build": "parcel build index.html"
   },
   "dependencies": {},
   "devDependencies": {
     "@babel/core": "7.2.0",
-    "parcel-bundler": "^1.6.1"
+    "parcel-bundler": "^1.6.1",
+    "typescript": "^3.7.5"
   },
   "keywords": []
 }

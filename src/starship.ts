@@ -21,63 +21,62 @@ export interface Color {
   a: number
 }
 
-export type StarshipInit<T> = () => T
-
-export type StarshipDestroy<T> = (state: T) => T
-
-export type StarshipDispatch<E> = (event: E) => void
-
-export type StarshipUpdate<T = any, E = any> = (
-  state: T,
-  dispatch: StarshipDispatch<E>,
-) => void
-
-export type StarshipSubscribe<T, E> = (state: T, event: E) => void
-
-export interface StarshipConfig<T, E> {
+export interface StarshipConfig {
   title: string
   window: Vector2
   canvas: Vector2
   fps?: number
-  init?: StarshipInit<T>
-  destroy?: StarshipDestroy<T>
-  subscribe?: StarshipSubscribe<T, E>
-  update: StarshipUpdate<T, E>
 }
+
+export type StarshipInit<T = unknown> = () => T
+
+export type StarshipDestroy<T> = (state: T) => void
+
+export type StarshipUpdate<T = unknown, E = unknown> = (
+  state: T,
+  queue: E[],
+) => boolean | void
 
 // -----------------------------------------------------------------------------
 // Lifecycle
 // -----------------------------------------------------------------------------
 
+let FRAME = 0
+
+export function getFrame() {
+  return FRAME
+}
+
 /** Runs the game */
-export function run<T, E>(config: StarshipConfig<T, E>) {
+export function run<T, E>(
+  config: StarshipConfig,
+  init: StarshipInit<T>,
+  destroy: StarshipDestroy<T>,
+  update: StarshipUpdate<T, E>,
+) {
   const oldCanvas = document.querySelector('canvas')
-  if (oldCanvas) oldCanvas.parentNode.removeChild(oldCanvas)
-  GFX = document.createElement('canvas').getContext('2d')
+  oldCanvas?.parentNode?.removeChild(oldCanvas)
+  FRAME = 0
+  GFX = document.createElement('canvas').getContext('2d')!
   GFX.imageSmoothingEnabled = false
   GFX.canvas.tabIndex = 0
   GFX.canvas.width = config.canvas.x
   GFX.canvas.height = config.canvas.y
-  GFX.canvas.style['image-rendering'] = 'pixelated'
-  GFX.canvas.style['object-fit'] = 'contain'
-  GFX.canvas.style['background'] = '#f0f'
-  GFX.canvas.style['width'] = '100vw'
-  GFX.canvas.style['height'] = '100vh'
+  GFX.canvas.style.imageRendering = 'pixelated'
+  GFX.canvas.style.objectFit = 'contain'
+  GFX.canvas.style.background = '#f0f'
+  GFX.canvas.style.width = '100vw'
+  GFX.canvas.style.height = '100vh'
   document.body.appendChild(GFX.canvas)
-  const fps = config.fps ? config.fps : 60
-  let state = config.init ? config.init() : null
-  let events: E[] = []
-  let dispatch = (e: E) => {
-    events.push(e)
-  }
-  setAnimationFrame(() => {
-    config.update(state, dispatch)
-    if (config.subscribe) {
-      for (const event of events) {
-        config.subscribe(state, event)
-      }
+  const fps = config.fps ?? 60
+  let state = init()
+  let queue: E[] = []
+  const stop = setAnimationFrame(() => {
+    if (update(state, queue)) {
+      destroy(state)
+      stop()
     }
-    events = []
+    FRAME++
   }, 1000 / fps)
 }
 
@@ -141,36 +140,38 @@ function keyToButton(key: string): void | Button {
   }
 }
 
-const buttons: { [key in Button]: boolean } = {
-  [Button.A]: false,
-  [Button.B]: false,
-  [Button.Up]: false,
-  [Button.Down]: false,
-  [Button.Left]: false,
-  [Button.Right]: false,
-  [Button.Start]: false,
-  [Button.Select]: false,
+const BUTTONS: { [key in Button]: number } = {
+  [Button.A]: 0,
+  [Button.B]: 0,
+  [Button.Up]: 0,
+  [Button.Down]: 0,
+  [Button.Left]: 0,
+  [Button.Right]: 0,
+  [Button.Start]: 0,
+  [Button.Select]: 0,
 }
 
 window.onkeyup = (e: KeyboardEvent) => {
   const btn = keyToButton(e.key)
-  if (btn) buttons[btn] = false
+  if (btn) BUTTONS[btn] = 0
 }
 
 window.onkeydown = (e: KeyboardEvent) => {
   const btn = keyToButton(e.key)
-  if (btn) buttons[btn] = true
+  if (btn && !BUTTONS[btn]) {
+    BUTTONS[btn] = performance.now()
+  }
 }
 
 /** Checks if a button is pressed this frame */
 export function isButtonDown(btn: Button) {
-  return buttons[btn]
+  return BUTTONS[btn] > 0
 }
 
 /** Checks if a button is held down this frame */
 export function isButtonPressed(btn: Button) {
-  // TODO: make this not the same as isButtonDown
-  return buttons[btn]
+  let delta = performance.now() - BUTTONS[btn]
+  return delta < 16.666 // 1 frame at 60 FPS
 }
 
 // -----------------------------------------------------------------------------
@@ -186,21 +187,21 @@ export function playSound(src: string) {
     const audio = new Audio(src)
     SOUNDS.set(src, audio)
   }
-  SOUNDS.get(src)
-    .play()
-    // "handle" playback errors and prevent dev overlay from blowing up
-    .then(noop)
-    .catch(noop)
+  if (!isSoundPlaying(src))
+    SOUNDS.get(src)
+      ?.play()
+      // "handle" playback errors and prevent dev overlay from blowing up
+      .then(noop)
+      .catch(noop)
 }
 
 export function stopSound(src: string) {
-  if (!SOUNDS.has(src)) return
-  SOUNDS.get(src).pause()
+  SOUNDS.get(src)?.pause()
 }
 
 export function isSoundPlaying(src: string) {
-  if (!SOUNDS.has(src)) return false
-  return !SOUNDS.get(src).paused
+  const paused = SOUNDS.get(src)?.paused ?? true
+  return !paused
 }
 
 // -----------------------------------------------------------------------------
@@ -242,7 +243,7 @@ export function rectfill(rect: Rectangle, color: Color) {
 export function sprite(src: string, rect: Rectangle, pos: Vector2) {
   if (!SPRITES.has(src)) {
     if (FONTS.has(src)) {
-      SPRITES.set(src, FONTS.get(src).data)
+      SPRITES.set(src, FONTS.get(src)!.data)
     } else {
       const img = new Image()
       img.src = src
@@ -250,7 +251,7 @@ export function sprite(src: string, rect: Rectangle, pos: Vector2) {
     }
   }
   GFX.drawImage(
-    SPRITES.get(src),
+    SPRITES.get(src)!,
     rect.x,
     rect.y,
     rect.width,
@@ -280,7 +281,7 @@ export function print(
     }
     FONTS.set(src, font)
   }
-  const font = FONTS.get(src)
+  const font = FONTS.get(src)!
   const cols = 16
   // const rows = 6
   const charCodeOffset = 32
@@ -294,7 +295,7 @@ export function print(
   // Swap the current drawing canvas with an offscreen one
   if (needsMask) {
     OGX = GFX
-    TXT = document.createElement('canvas').getContext('2d')
+    TXT = document.createElement('canvas').getContext('2d')!
     TXT.imageSmoothingEnabled = false
     TXT.canvas.width = GFX.canvas.width
     TXT.canvas.height = GFX.canvas.height
@@ -328,7 +329,7 @@ export function print(
 
   // Draw the offscreen canvas into the visible canvas
   if (needsMask) {
-    GFX = OGX
+    GFX = OGX!
     TXT.globalCompositeOperation = 'source-in'
     TXT.fillStyle = `rgba(${r},${g},${b},${a / 255})`
     TXT.fillRect(0, 0, TXT.canvas.width, TXT.canvas.height)

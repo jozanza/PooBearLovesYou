@@ -3,19 +3,19 @@ import { Rectangle, Vector2 } from './starship'
 export const TILE_SIZE = 16
 
 export enum Font {
-  Small = '/assets/fonts/baby.png',
-  Medium = '/assets/fonts/thicc.png',
+  Small = '/fonts/baby.png',
+  Medium = '/fonts/thicc.png',
 }
 
 export enum Sound {
-  MainTheme = '/assets/audio/main-theme.mp3',
+  MainTheme = '/audio/main-theme.mp3',
 }
 
 export enum Spritesheet {
-  Environment = '/assets/images/environment.png',
-  Food = '/assets/images/food.png',
-  Pet = '/assets/images/pet.png',
-  Player = '/assets/images/player.png',
+  Environment = '/images/environment.png',
+  Food = '/images/food.png',
+  Pet = '/images/pet.png',
+  Player = '/images/player.png',
 }
 
 export type Position = Vector2
