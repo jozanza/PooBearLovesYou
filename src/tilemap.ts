@@ -135,9 +135,9 @@ export function getTileType(
 
 export function hasCollision(tilemap: Tilemap, rect: Rectangle) {
   const x0 = Math.floor(rect.x / TILE_SIZE)
-  const x1 = Math.floor((rect.x + rect.width) / TILE_SIZE)
+  const x1 = Math.floor((rect.x + rect.width - 1) / TILE_SIZE)
   const y0 = Math.floor(rect.y / TILE_SIZE)
-  const y1 = Math.floor((rect.y + rect.height) / TILE_SIZE)
+  const y1 = Math.floor((rect.y + rect.height - 1) / TILE_SIZE)
   const positions = [
     { x: x0, y: y0 }, // top-left
     { x: x1, y: y0 }, // top-right

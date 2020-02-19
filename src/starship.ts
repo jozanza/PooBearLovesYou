@@ -196,7 +196,11 @@ export function playSound(src: string) {
 }
 
 export function stopSound(src: string) {
-  SOUNDS.get(src)?.pause()
+  const sound = SOUNDS.get(src)
+  if (sound) {
+    sound.pause()
+    sound.currentTime = 0
+  }
 }
 
 export function isSoundPlaying(src: string) {
@@ -235,7 +239,7 @@ export function rectfill(rect: Rectangle, color: Color) {
   const { x, y, width: w, height: h } = rect
   const { r, g, b, a } = color
   GFX.fillStyle = `rgba(${r},${g},${b},${a / 255})`
-  GFX.fillRect(x, y, w, h)
+  GFX.fillRect(Math.floor(x), Math.floor(y), w, h)
   GFX.fillStyle = 'transparent'
 }
 
@@ -256,8 +260,8 @@ export function sprite(src: string, rect: Rectangle, pos: Vector2) {
     rect.y,
     rect.width,
     rect.height,
-    pos.x,
-    pos.y,
+    Math.floor(pos.x),
+    Math.floor(pos.y),
     rect.width,
     rect.height,
   )
@@ -320,8 +324,8 @@ export function print(
         height: font.charSize.y,
       },
       {
-        x: pos.x + cursorX,
-        y: pos.y + cursorY,
+        x: Math.floor(pos.x) + cursorX,
+        y: Math.floor(pos.y) + cursorY,
       },
     )
     cursorX += font.charSize.x + 1

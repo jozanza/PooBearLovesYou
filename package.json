@@ -5,7 +5,9 @@
   "main": "index.html",
   "scripts": {
     "start": "parcel index.html",
-    "prestart": "rm -rf dist && mkdir dist && cp -r public/. dist",
+    "prestart": "npm run clean && npm run copy-assets",
+    "clean": "rm -rf dist",
+    "copy-assets": "mkdir -p dist && cp -r assets dist/assets",
     "build": "parcel build index.html"
   },
   "dependencies": {},
