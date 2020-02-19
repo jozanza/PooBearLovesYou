@@ -5,7 +5,7 @@ import {
   print,
   playSound,
 } from '../starship'
-import { Font, Sound } from '../common'
+import { Font, Sound } from '../assets'
 import { SceneType } from '../scenes'
 import { Event, EventType } from '../events'
 import { State } from '../state'

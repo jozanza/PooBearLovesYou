@@ -9,12 +9,11 @@ import {
   // isButtonDown,
   // isButtonPressed,
   // audio
-  playSound,
   run,
   StarshipInit,
   StarshipDestroy,
 } from './starship'
-import { Sound, Font } from './common'
+import { Font } from './assets'
 import { State } from './state'
 import { Event, EventType } from './events'
 import { createScene, SceneType } from './scenes'

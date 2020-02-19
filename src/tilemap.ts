@@ -1,5 +1,5 @@
 import { Vector2, sprite, Rectangle } from './starship'
-import { Spritesheet } from './common'
+import { Spritesheet } from './assets'
 
 enum TileType {
   Grass1,
@@ -105,15 +105,21 @@ export interface Tilemap {
   frame: number
 }
 
-export function tilemapOfString(str: string, size: Vector2): Tilemap {
+export function tilemapOfString(str: string): Tilemap {
   const tiles: TileType[] = []
-  for (const char of str) {
-    if (!LEGEND.hasOwnProperty(char)) continue
+  let x = 0
+  let y = 1
+  for (const char of str.trim()) {
+    if (!LEGEND.hasOwnProperty(char)) {
+      if (char === '\n') y++
+      continue
+    }
+    if (y === 1) x++
     const type = LEGEND[char]
     tiles.push(type)
   }
   return {
-    size,
+    size: { x, y },
     src: Spritesheet.Environment,
     tiles,
     frame: 0,

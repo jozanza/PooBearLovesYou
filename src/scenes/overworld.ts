@@ -10,14 +10,13 @@ import {
   rgba,
   isButtonDown,
 } from '../starship'
-import { Font, Sound } from '../common'
+import { Font, Sound } from '../assets'
 import { SceneType } from '../scenes'
 import { Event, EventType } from '../events'
 import { State } from '../state'
 import { tilemapOfString, drawTileMap, hasCollision } from '../tilemap'
 
-const LEVEL_0 = tilemapOfString(
-  `
+const LEVEL_0 = tilemapOfString(`
 l l . . . . . ' . . . . . . r r
 . " ' * . . ' p t t . . . . ' l
 . r " r . . . l . . r ' " . . .
@@ -27,9 +26,7 @@ l l . . . . . ' . . . . . . r r
 " t . . . . . ╭ ╴ ╴ ╴ ╴ ╴ ╮ . .
 * l . ' t p * ╷ ~ ~ ~ ~ ~ ╵ . t
 . . ' " p . . ╰ ╶ ╶ ╶ ╶ ╶ ╯ t t
-`,
-  { x: 16, y: 9 },
-)
+`)
 
 // prettier-ignore
 let x = 32, y = 32, width = 16, height = 16
