@@ -1,16 +1,19 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "CommonJS",
     "jsx": "preserve",
     "esModuleInterop": true,
     "sourceMap": true,
     "allowJs": true,
+    "strict": true,
     "downlevelIteration": true,
     "lib": [
-      "es6",
-      "dom"
+      "ESNext",
+      "DOM"
     ],
     "rootDir": "src",
     "moduleResolution": "node"
-  }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", ".cache"]
 }
