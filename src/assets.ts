@@ -1,5 +1,5 @@
 // Support assets being served locally or on csb
-const ASSET_PATH = window.location.href.includes('csb.app') ? '/public' : '/'
+const ASSET_PATH = window.location.href.includes('csb.app') ? '/public' : ''
 const asset = <T>(a: string) => (`${ASSET_PATH}${a}` as unknown) as T
 
 export enum Font {
