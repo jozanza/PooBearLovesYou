@@ -1,10 +1,8 @@
 import {
   StarshipConfig,
   StarshipUpdate,
-  // gfx
   clear,
-  print,
-  // io
+  drawText,
   // Button,
   // isButtonDown,
   // isButtonPressed,
@@ -12,7 +10,7 @@ import {
   run,
   StarshipInit,
   StarshipDestroy,
-} from './starship'
+} from '@vsmode/starship'
 import { Font } from './assets'
 import { State } from './state'
 import { Event, EventType } from './events'
@@ -53,7 +51,7 @@ const update: StarshipUpdate<State, Event> = (state, queue) => {
   clear()
 
   // Debug
-  print(Font.Medium, JSON.stringify(state, null, 2), { x: 0, y: 41 })
+  drawText(Font.Small, JSON.stringify(state, null, 2), { x: 0, y: 41 })
 
   // Scenes
   switch (state.scene.type) {

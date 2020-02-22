@@ -1,5 +1,5 @@
-import { Vector2, sprite, Rectangle } from './starship'
-import { Spritesheet } from './assets'
+import { Vector2, drawSprite, Rectangle } from '@vsmode/starship'
+import { Spritesheet, AnimationRate } from './assets'
 
 enum TileType {
   Grass1,
@@ -33,11 +33,7 @@ type MakeTile<T extends TileType> = {
   solid: boolean
 }
 
-// TODO: convert to enums (TileSize, AnimationRate)
 const TILE_SIZE = 16
-const FAST_RATE = 16
-const MEDIUM_RATE = 32
-const SLOW_RATE = 64
 
 function makeTile<T extends TileType>(
   type: T,
@@ -63,19 +59,19 @@ const TILES = {
   [TileType.Grass2]: makeTile(TileType.Grass2, 1),
   [TileType.Grass3]: makeTile(TileType.Grass3, 2),
   [TileType.Grass4]: makeTile(TileType.Grass4, 3),
-  [TileType.Tree]: makeTile(TileType.Tree, 13, MEDIUM_RATE, 2, true),
+  [TileType.Tree]: makeTile(TileType.Tree, 13, AnimationRate.Comfy, 2, true),
   [TileType.Log]: makeTile(TileType.Log, 15, undefined, undefined, true),
   [TileType.Rock]: makeTile(TileType.Rock, 14, undefined, undefined, true),
   [TileType.Pebbles]: makeTile(TileType.Pebbles, 16, undefined, undefined, true),
-  [TileType.WaterTopLeft]: makeTile(TileType.WaterTopLeft, 4, SLOW_RATE, 2, true),
-  [TileType.WaterTop]: makeTile(TileType.WaterTop, 5, SLOW_RATE, 2, true),
-  [TileType.WaterTopRight]: makeTile(TileType.WaterTopRight, 6, SLOW_RATE, 2, true),
-  [TileType.WaterRight]: makeTile(TileType.WaterRight, 7, SLOW_RATE, 2, true),
-  [TileType.WaterBottomRight]: makeTile(TileType.WaterBottomRight, 11, SLOW_RATE, 2, true),
-  [TileType.WaterBottom]: makeTile(TileType.WaterBottom, 10, SLOW_RATE, 2, true),
-  [TileType.WaterBottomLeft]: makeTile(TileType.WaterBottomLeft, 9, SLOW_RATE, 2, true),
-  [TileType.WaterLeft]: makeTile(TileType.WaterLeft, 8, SLOW_RATE, 2, true),
-  [TileType.WaterMiddle]: makeTile(TileType.WaterMiddle, 12, SLOW_RATE, 2, true),
+  [TileType.WaterTopLeft]: makeTile(TileType.WaterTopLeft, 4, AnimationRate.Slow, 2, true),
+  [TileType.WaterTop]: makeTile(TileType.WaterTop, 5, AnimationRate.Slow, 2, true),
+  [TileType.WaterTopRight]: makeTile(TileType.WaterTopRight, 6, AnimationRate.Slow, 2, true),
+  [TileType.WaterRight]: makeTile(TileType.WaterRight, 7, AnimationRate.Slow, 2, true),
+  [TileType.WaterBottomRight]: makeTile(TileType.WaterBottomRight, 11, AnimationRate.Slow, 2, true),
+  [TileType.WaterBottom]: makeTile(TileType.WaterBottom, 10, AnimationRate.Slow, 2, true),
+  [TileType.WaterBottomLeft]: makeTile(TileType.WaterBottomLeft, 9, AnimationRate.Slow, 2, true),
+  [TileType.WaterLeft]: makeTile(TileType.WaterLeft, 8, AnimationRate.Slow, 2, true),
+  [TileType.WaterMiddle]: makeTile(TileType.WaterMiddle, 12, AnimationRate.Slow, 2, true),
 }
 
 const LEGEND: { [key: string]: TileType } = {
@@ -164,7 +160,7 @@ export function drawTileMap(tilemap: Tilemap, origin: Vector2) {
     const { x, y } = tile.pos
     const col = i % cols
     const row = Math.floor(i / cols) % rows
-    sprite(
+    drawSprite(
       tilemap.src,
       { x, y: y + frame * height, width, height },
       {

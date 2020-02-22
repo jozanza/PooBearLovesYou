@@ -2,9 +2,9 @@ import {
   StarshipUpdate,
   isButtonPressed,
   Button,
-  print,
+  drawText,
   playSound,
-} from '../starship'
+} from '@vsmode/starship'
 import { Font, Sound } from '../assets'
 import { SceneType } from '../scenes'
 import { Event, EventType } from '../events'
@@ -15,7 +15,7 @@ const update: StarshipUpdate<State, Event> = (state, queue) => {
     console.log('ENTERED')
   }
   playSound(Sound.MainTheme)
-  print(Font.Medium, `POO BEAR LOVES YOU <3`, { x: 8, y: 8 })
+  drawText(Font.Medium, `POO BEAR LOVES YOU <3`, { x: 8, y: 8 })
   if (isButtonPressed(Button.Start)) {
     console.log('dispatching from title')
     queue.push({

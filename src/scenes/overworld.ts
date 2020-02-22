@@ -2,18 +2,13 @@ import {
   StarshipUpdate,
   isButtonPressed,
   Button,
-  print,
   playSound,
-  sprite,
+  drawSprite,
   Vector2,
-  rectfill,
-  rgba,
   isButtonDown,
   Rectangle,
-  stopSound,
-} from '../starship'
+} from '@vsmode/starship'
 import {
-  Font,
   Sound,
   Spritesheet,
   SPRITE_ANIMATIONS,
@@ -75,7 +70,7 @@ const update: StarshipUpdate<State, Event> = (state, queue) => {
     ][pooBear.direction]
     const srcX = index * 16
     const srcY = (Math.floor(i / rate) % frames) * 16
-    sprite(
+    drawSprite(
       Spritesheet.Pet,
       { x: srcX, y: srcY, width: 16, height: 16 },
       { x, y },
@@ -90,7 +85,7 @@ const update: StarshipUpdate<State, Event> = (state, queue) => {
     ][player.direction]
     const srcX = index * 16
     const srcY = (Math.floor(i / rate) % frames) * 16
-    sprite(
+    drawSprite(
       Spritesheet.Player,
       { x: srcX, y: srcY, width: 16, height: 16 },
       { x, y },

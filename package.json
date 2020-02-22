@@ -1,5 +1,5 @@
 {
-  "name": "canvas",
+  "name": "poobear-loves-you",
   "version": "1.0.0",
   "description": "",
   "main": "index.html",
@@ -10,7 +10,9 @@
     "copy-assets": "mkdir -p dist && cp -r assets dist/assets",
     "build": "parcel build index.html"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@vsmode/starship": "^1.0.1"
+  },
   "devDependencies": {
     "@babel/core": "7.2.0",
     "parcel-bundler": "^1.6.1",

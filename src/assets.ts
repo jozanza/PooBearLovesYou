@@ -1,7 +1,11 @@
+import { FONT_5x5, FONT_8x8 } from '@vsmode/starship'
+
 export enum Font {
-  Small = `/assets/fonts/baby.png`,
-  Medium = `/assets/fonts/thicc.png`,
+  Small = 'Small',
+  Medium = 'Medium',
 }
+;(Font.Small as any) = FONT_5x5
+;(Font.Medium as any) = FONT_8x8
 
 export enum Sound {
   MainTheme = `/assets/sounds/main-theme.mp3`,
@@ -15,7 +19,7 @@ export enum Spritesheet {
   Player = `/assets/sprites/player.png`,
 }
 
-enum AnimationRate {
+export enum AnimationRate {
   Slow = 64,
   Comfy = 32,
   Normal = 16,
