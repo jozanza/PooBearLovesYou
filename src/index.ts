@@ -17,6 +17,8 @@ import { Event, EventType } from './events'
 import { createScene, SceneType } from './scenes'
 import updateTitleScene from './scenes/title'
 import updateOverworldScene from './scenes/overworld'
+import updateGameOverScene from './scenes/gameOver'
+import updateVictoryScene from './scenes/victory'
 
 /**
  * Game configuration
@@ -33,14 +35,14 @@ const config: StarshipConfig = {
  */
 const init: StarshipInit<State> = () => {
   return {
-    scene: createScene(SceneType.Overworld),
+    scene: createScene(SceneType.Title),
   }
 }
 
 /**
  * Runs before game ends
  */
-const destroy: StarshipDestroy<State> = _ => {
+const destroy: StarshipDestroy<State> = (_) => {
   // nothing to do here :)
 }
 
@@ -51,7 +53,7 @@ const update: StarshipUpdate<State, Event> = (state, queue) => {
   clear()
 
   // Debug
-  drawText(Font.Small, JSON.stringify(state, null, 2), { x: 0, y: 41 })
+  // drawText(Font.Small, JSON.stringify(state, null, 2), { x: 0, y: 41 })
 
   // Scenes
   switch (state.scene.type) {
@@ -61,6 +63,14 @@ const update: StarshipUpdate<State, Event> = (state, queue) => {
     }
     case SceneType.Overworld: {
       updateOverworldScene(state, queue)
+      break
+    }
+    case SceneType.GameOver: {
+      updateGameOverScene(state, queue)
+      break
+    }
+    case SceneType.Victory: {
+      updateVictoryScene(state, queue)
       break
     }
   }

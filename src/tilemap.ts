@@ -1,7 +1,7 @@
 import { Vector2, drawSprite, Rectangle } from '@vsmode/starship'
 import { Spritesheet, AnimationRate } from './assets'
 
-enum TileType {
+export enum TileType {
   Grass1,
   Grass2,
   Grass3,
@@ -26,7 +26,7 @@ interface SpriteAnimation {
   frames: number
 }
 
-type MakeTile<T extends TileType> = {
+type Tile<T extends TileType> = {
   type: T
   pos: Vector2
   animation: SpriteAnimation
@@ -41,7 +41,7 @@ function makeTile<T extends TileType>(
   rate: number = 0,
   frames: number = 1,
   solid: boolean = false,
-): MakeTile<T> {
+): Tile<T> {
   return {
     type,
     pos: {
@@ -129,23 +129,46 @@ export function getTileType(
   return tilemap.tiles[x + tilemap.size.x * y] ?? null
 }
 
-export function hasCollision(tilemap: Tilemap, rect: Rectangle) {
-  const x0 = Math.floor(rect.x / TILE_SIZE)
-  const x1 = Math.floor((rect.x + rect.width - 1) / TILE_SIZE)
-  const y0 = Math.floor(rect.y / TILE_SIZE)
-  const y1 = Math.floor((rect.y + rect.height - 1) / TILE_SIZE)
-  const positions = [
-    { x: x0, y: y0 }, // top-left
-    { x: x1, y: y0 }, // top-right
-    { x: x1, y: y1 }, // bottom-right
-    { x: x0, y: y1 }, // bottom-left
-  ]
-  // Check each positionn for a collision
-  for (const pos of positions) {
-    const type = getTileType(tilemap, pos)
-    if (type && TILES[type].solid) return true
-  }
-  return false
+export function getTile(
+  tilemap: Tilemap,
+  { x, y }: Vector2,
+): Tile<TileType> | null {
+  return TILES[tilemap.tiles[x + tilemap.size.x * y]] ?? null
+}
+
+export function willCollide(
+  tilemap: Tilemap,
+  { x, y, width, height }: Rectangle,
+  deltaX: number,
+  deltaY: number,
+) {
+  const y0 = Math.floor((y + deltaY) / TILE_SIZE)
+  const y1 = Math.floor((y + deltaY + height - 1) / TILE_SIZE)
+  const x0 = Math.floor((x + deltaX) / TILE_SIZE)
+  const x1 = Math.floor((x + deltaX + width - 1) / TILE_SIZE)
+  const topLeft = getTile(tilemap, {
+    y: y0,
+    x: x0,
+  })
+  const topRight = getTile(tilemap, {
+    y: y0,
+    x: x1,
+  })
+  const bottomLeft = getTile(tilemap, {
+    y: y1,
+    x: x0,
+  })
+  const bottomRight = getTile(tilemap, {
+    y: y1,
+    x: x1,
+  })
+  return (
+    topLeft?.solid ||
+    topRight?.solid ||
+    bottomLeft?.solid ||
+    bottomRight?.solid ||
+    false
+  )
 }
 
 export function drawTileMap(tilemap: Tilemap, origin: Vector2) {
