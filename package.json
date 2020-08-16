@@ -14,9 +14,9 @@
     "@vsmode/starship": "^1.0.1"
   },
   "devDependencies": {
-    "@babel/core": "7.2.0",
-    "parcel-bundler": "^1.6.1",
-    "typescript": "^3.7.5"
+    "@babel/core": "^7.11.1",
+    "parcel-bundler": "^1.12.4",
+    "typescript": "^3.9.7"
   },
   "keywords": []
 }
