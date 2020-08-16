@@ -2,16 +2,10 @@ import {
   StarshipConfig,
   StarshipUpdate,
   clear,
-  drawText,
-  // Button,
-  // isButtonDown,
-  // isButtonPressed,
-  // audio
   run,
   StarshipInit,
   StarshipDestroy,
 } from '@vsmode/starship'
-import { Font } from './assets'
 import { State } from './state'
 import { Event, EventType } from './events'
 import { createScene, SceneType } from './scenes'
